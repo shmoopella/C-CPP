@@ -1,0 +1,496 @@
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+
+#include "s21_math.h"
+
+double EPS = 0.0000001;
+double x1 = -2.12;
+double x2 = 2.127;
+double x3 = 16;
+double x4 = 2.3;
+double inf = INFINITY;
+double ninf = -INFINITY;
+double nan1 = NAN;
+
+#test abs1
+int y = 34679;
+ck_assert_int_eq(abs(y), s21_abs(y));
+
+#test abs2
+int y = -34679;
+ck_assert_int_eq(abs(y), s21_abs(y));
+
+#test abs3
+int y = 0;
+ck_assert_int_eq(abs(y), s21_abs(y));
+
+
+#test fabs1
+long double res = fabs(x1) - s21_fabs(x1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test fabs2
+long double res = fabs(x2) - s21_fabs(x2);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test fabs3
+#test fabs4
+#test fabs5
+
+#test sqrt1
+long double res = sqrt(x3) - s21_sqrt(x3);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test sqrt2
+long double res = sqrt(x2) - s21_sqrt(x2);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test sqrt3
+ck_assert_ldouble_nan(s21_sqrt(x1));
+
+#test sqrt4
+ck_assert_ldouble_infinite(s21_sqrt(inf));
+
+#test sqrt5
+ck_assert_ldouble_nan(s21_sqrt(ninf));
+
+#test sqrt6
+long double res = sqrt(0) - s21_sqrt(0);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test sqrt7
+ck_assert_ldouble_nan(s21_sqrt(nan1));
+
+
+#test fmod1
+long double res = fmod(-2.12, 2.3) - s21_fmod(-2.12, 2.3);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test fmod2
+long double res = fmod(2.12, -2.3) - s21_fmod(2.12, -2.3);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test fmod3
+long double res = fmod(2.3, -2.12) - s21_fmod(2.3, -2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test fmod4
+long double res = fmod(-2.3, 2.12) - s21_fmod(-2.3, 2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test fmod5
+ck_assert_ldouble_nan(s21_fmod(x1, nan1));
+
+#test fmod6
+ck_assert_ldouble_nan(s21_fmod(x1, 0));
+
+#test fmod7
+ck_assert_ldouble_nan(s21_fmod(inf, 2));
+
+#test fmod8
+long double res = fmod(2.12, inf) - s21_fmod(2.12, inf);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test fmod9
+ck_assert_ldouble_nan(s21_fmod(ninf, 2));
+
+#test fmod10
+long double res = fmod(2.12, ninf) - s21_fmod(2.12, ninf);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test fmod11
+ck_assert_ldouble_nan(s21_fmod(ninf, ninf));
+
+#test fmod12
+ck_assert_ldouble_nan(s21_fmod(inf, inf));
+
+
+
+#test ceil1
+long double res = ceil(-2.12) - s21_ceil(-2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test ceil2
+long double res = ceil(2.928) - s21_ceil(2.928);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test ceil3
+long double res = ceil(0) - s21_ceil(0);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test ceil4
+ck_assert_ldouble_nan(s21_ceil(nan1));
+
+#test ceil5
+ck_assert_ldouble_infinite(s21_ceil(inf));
+
+#test ceil6
+ck_assert_ldouble_infinite(s21_ceil(ninf));
+
+
+#test floor1
+long double res = floor(-2.12) - s21_floor(-2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test floor2
+long double res = floor(2.928) - s21_floor(2.928);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test floor3
+long double res = floor(0) - s21_floor(0);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test floor4
+ck_assert_ldouble_nan(s21_floor(nan1));
+
+#test floor5
+ck_assert_ldouble_infinite(s21_floor(inf));
+
+#test floor6
+ck_assert_ldouble_infinite(s21_floor(ninf));
+
+
+#test exp1
+long double res = exp(2.12) - s21_exp(2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test exp02
+long double res = exp(-2.12) - s21_exp(-2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test exp3
+long double res = exp(0) - s21_exp(0);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test exp4
+ck_assert_ldouble_infinite(s21_exp(inf));
+
+#test exp5
+long double res = exp(ninf) - s21_exp(ninf);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test exp6
+ck_assert_ldouble_nan(s21_exp(nan1));
+
+
+#test log1
+long double res = log(2.12) - s21_log(2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test log02
+ck_assert_ldouble_nan(s21_log(-2.987));
+
+#test log3
+ck_assert_ldouble_infinite(s21_log(0));
+
+#test log4
+ck_assert_ldouble_infinite(s21_log(inf));
+
+#test log5
+ck_assert_ldouble_nan(s21_log(ninf));
+
+#test log6
+ck_assert_ldouble_nan(s21_log(nan1));
+
+
+#test pow1
+long double res = pow(2.12, 4.1) - s21_pow(2.12, 4.1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow02
+ck_assert_ldouble_nan(s21_pow(-2.12, -4.1));
+
+#test pow3
+ck_assert_ldouble_nan(s21_pow(-2.12, 4.1));
+
+#test pow4
+long double res = pow(2.12, -4.1) - s21_pow(2.12, -4.1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow5
+long double res = pow(2, 4) - s21_pow(2, 4);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow6
+long double res = pow(-2, -4) - s21_pow(-2, -4);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow7
+long double res = pow(2, -4) - s21_pow(2, -4);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow8
+long double res = pow(-2, 4) - s21_pow(-2, 4);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow9
+long double res = pow(2.5, 4) - s21_pow(2.5, 4);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow10
+long double res = pow(-2.5, -4) - s21_pow(-2.5, -4);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow11
+long double res = pow(2.5, -4) - s21_pow(2.5, -4);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow12
+long double res = pow(-2.5, 4) - s21_pow(-2.5, 4);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow13
+long double res = pow(-2.5, 0) - s21_pow(-2.5, 0);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow14
+long double res = pow(0, 0) - s21_pow(0, 0);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow15
+ck_assert_ldouble_infinite(s21_pow(inf, inf));
+
+#test pow16
+long double res = pow(ninf, ninf) - s21_pow(ninf, ninf);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow17
+long double res = pow(2.5, ninf) - s21_pow(2.5, ninf);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test pow18
+ck_assert_ldouble_infinite(s21_pow(ninf, 2.5));
+
+#test pow19
+ck_assert_ldouble_infinite(s21_pow(2.5, inf));
+
+#test pow20
+ck_assert_ldouble_infinite(s21_pow(inf, 2.5));
+
+
+
+#test sin1
+long double res = sin(2.12) - s21_sin(2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test sin2
+long double res = sin(-2.12) - s21_sin(-2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test sin3
+long double res = sin(0) - s21_sin(0);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test sin4
+long double res = sin(1) - s21_sin(1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test sin5
+long double res = sin(-1) - s21_sin(-1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test sin6
+long double res = sin(-100) - s21_sin(-100);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test sin7
+long double res = sin(100) - s21_sin(100);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test sin8
+ck_assert_ldouble_nan(s21_cos(nan1));
+
+#test sin9
+ck_assert_ldouble_nan(s21_cos(inf));
+
+#test sin10
+ck_assert_ldouble_nan(s21_cos(ninf));
+
+
+
+#test asin1
+long double res = asin(0.12) - s21_asin(0.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test asin2
+long double res = asin(-0.12) - s21_asin(-0.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test asin3
+long double res = asin(0) - s21_asin(0);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test asin4
+long double res = asin(1) - s21_asin(1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test asin5
+long double res = asin(-1) - s21_asin(-1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test asin6
+ck_assert_ldouble_nan(s21_asin(2.15));
+
+#test asin7
+ck_assert_ldouble_nan(s21_asin(-2.15));
+
+#test asin8
+ck_assert_ldouble_nan(s21_asin(nan1));
+
+#test asin9
+ck_assert_ldouble_nan(s21_asin(inf));
+
+#test asin10
+ck_assert_ldouble_nan(s21_asin(ninf));
+
+
+#test cos1
+long double res = cos(2.12) - s21_cos(2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test cos2
+long double res = cos(-2.12) - s21_cos(-2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test cos3
+long double res = cos(0) - s21_cos(0);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test cos4
+long double res = cos(1) - s21_cos(1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test cos5
+long double res = cos(-1) - s21_cos(-1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test cos6
+long double res = cos(-100) - s21_cos(-100);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test cos7
+long double res = cos(100) - s21_cos(100);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test cos8
+ck_assert_ldouble_nan(s21_cos(nan1));
+
+#test cos9
+ck_assert_ldouble_nan(s21_cos(inf));
+
+#test cos10
+ck_assert_ldouble_nan(s21_cos(ninf));
+
+
+
+#test acos1
+long double res = acos(0.12) - s21_acos(0.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test acos2
+long double res = acos(-0.12) - s21_acos(-0.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test acos3
+long double res = acos(0) - s21_acos(0);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test acos4
+long double res = acos(1) - s21_acos(1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test acos5
+long double res = acos(-1) - s21_acos(-1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test acos6
+ck_assert_ldouble_nan(s21_acos(2.15));
+
+#test acos7
+ck_assert_ldouble_nan(s21_acos(-2.15));
+
+#test acos8
+ck_assert_ldouble_nan(s21_acos(nan1));
+
+#test acos9
+ck_assert_ldouble_nan(s21_acos(inf));
+
+#test acos10
+ck_assert_ldouble_nan(s21_acos(ninf));
+
+
+
+#test tan1
+long double res = tan(2.12) - s21_tan(2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test tan2
+long double res = tan(-2.12) - s21_tan(-2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test tan3
+long double res = tan(0) - s21_tan(0);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test tan4
+long double res = tan(1) - s21_tan(1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test tan5
+long double res = tan(-1) - s21_tan(-1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test tan6
+long double res = tan(-100) - s21_tan(-100);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test tan7
+long double res = tan(100) - s21_tan(100);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test tan8
+ck_assert_ldouble_nan(s21_tan(nan1));
+
+#test tan9
+ck_assert_ldouble_nan(s21_tan(inf));
+
+#test tan10
+ck_assert_ldouble_nan(s21_tan(ninf));
+
+
+
+#test atan1
+long double res = atan(2.12) - s21_atan(2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test atan02
+long double res = atan(-2.12) - s21_atan(-2.12);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test atan3
+long double res = atan(0) - s21_atan(0);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test atan4
+long double res = atan(1) - s21_atan(1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test atan5
+long double res = atan(-1) - s21_atan(-1);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test atan6
+long double res = atan(-100) - s21_atan(-100);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test atan7
+ck_assert_ldouble_nan(s21_atan(nan1));
+
+#test atan8
+long double res = atan(inf) - s21_atan(inf);
+ck_assert_ldouble_lt(fabs((double)res), EPS);
+
+#test atan10
+long double res = atan(ninf) - s21_atan(ninf);
+ck_assert_ldouble_lt(fabs((double)res), EPS);

@@ -1,0 +1,187 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "main_calc.h"
+#include "calculate.h"
+#include "parcer.h"
+#include "polish_notation.h"
+#include "stack.h"
+#include "validation.h"
+
+#define SUCCESS 0
+#define ERROR 1
+
+#test calc1
+double res = 0;
+char input_str1[256] = "acos(0.2)";
+int error = main_calc(input_str1, 0, &res);
+ck_assert_int_eq(error, SUCCESS);
+ck_assert_double_eq_tol(acos(0.2), res, 0.0000001);
+
+#test calc2
+double res = 0;
+char input_str2[256] = "cos(2)*0.12-sin(1)";
+int error = main_calc(input_str2, 0, &res);
+ck_assert_int_eq(error, SUCCESS);
+ck_assert_double_eq_tol(cos(2)*0.12-sin(1), res, 0.0000001);
+
+#test calc3
+double res = 0;
+char input_str3[256] = "atan(7) + tan(17-0.5)";
+int error = main_calc(input_str3, 0, &res);
+ck_assert_int_eq(error, SUCCESS);
+ck_assert_double_eq_tol(atan(7) + tan(17-0.5), res, 0.0000001);
+
+#test calc4
+double res = 0;
+char input_str4[256] = "acos(0.7878)-asin(0.5)";
+int error = main_calc(input_str4, 0, &res);
+ck_assert_int_eq(error, SUCCESS);
+ck_assert_double_eq_tol(acos(0.7878)-asin(0.5), res, 0.0000001);
+
+#test calc5
+double res = 0;
+char input_str5[256] = "(ln(0.5) + log(1.5)) / sqrt(64)";
+int error = main_calc(input_str5, 0, &res);
+ck_assert_int_eq(error, SUCCESS);
+ck_assert_double_eq_tol((log(0.5) + log10(1.5)) / sqrt(64), res, 0.0000001);
+
+#test calc6
+double res = 0;
+char input_str6[256] = "(-4)mod10";
+int error = main_calc(input_str6, 0, &res);
+ck_assert_int_eq(error, SUCCESS);
+ck_assert_double_eq_tol(fmod(-4, 10), res, 0.0000001);
+
+#test calc7
+double res = 0;
+char input_str7[256] = "(22.23mod 3.2)^3";
+int error = main_calc(input_str7, 0, &res);
+ck_assert_int_eq(error, SUCCESS);
+ck_assert_double_eq_tol(pow(fmod(22.23, 3.2), 3), res, 1e-7);
+
+#test calc8
+double res = 0;
+char input_str8[256] = "(+4)-9.999";
+int error = main_calc(input_str8, 0, &res);
+ck_assert_int_eq(error, SUCCESS);
+ck_assert_double_eq_tol((+4)-9.999, res, 1e-7);
+
+#test calc9
+double res = 0;
+char input_str9[256] = "0.25+x";
+int error = main_calc(input_str9, 0.345, &res);
+ck_assert_int_eq(error, SUCCESS);
+ck_assert_double_eq_tol(0.25+0.345, res, 1e-7);
+
+#test valid1
+double res = 0;
+char input_str7[256] = "(22.23mod 3.2))^3";
+int error = main_calc(input_str7, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid2
+double res = 0;
+char input_str8[256] = "cos";
+int error = main_calc(input_str8, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid3
+double res = 0;
+char input_str9[350] = "cos(1)-tan(0.1122)+5 - cos(1)-tan(0.1122)+5 * cos(1)-tan(0.1122)+5 - cos(1)-tan(0.1122)+5 * cos(1)-tan(0.1122)+5  - \
+cos(1)-tan(0.1122)+5 + cos(1)-tan(0.1122)+5 / cos(1)-tan(0.1122)+5 - cos(1)-tan(0.1122)+5 * cos(1)-tan(0.1122)+5 - cos(1)-tan(0.1122)+5 *cos(1)-\
+tan(0.1122)+5 + cos(1)-tan(0.1122)+5";
+int error = main_calc(input_str9, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid4
+double res = 0;
+char input_str10[256] = "cos(1) + sin()";
+int error = main_calc(input_str10, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid5
+double res = 0;
+char input_str11[256] = ".23 - 5";
+int error = main_calc(input_str11, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid6
+double res = 0;
+char input_str12[256] = "23+0.5-21.";
+int error = main_calc(input_str12, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid7
+double res = 0;
+char input_str13[256] = "24.055.22+3";
+int error = main_calc(input_str13, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid8
+double res = 0;
+char input_str14[256] = "2s-2p";
+int error = main_calc(input_str14, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid9
+double res = 0;
+char input_str15[256] = "(3.22*5)2-2";
+int error = main_calc(input_str15, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid10
+double res = 0;
+char input_str16[256] = "(4*)-cos(1)";
+int error = main_calc(input_str16, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid11
+double res = 0;
+char input_str17[256] = "3.24+-3";
+int error = main_calc(input_str17, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid12
+double res = 0;
+char input_str18[256] = "(mod13)*2";
+int error = main_calc(input_str18, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid13
+double res = 0;
+char input_str19[256] = "5mod*25";
+int error = main_calc(input_str19, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid14
+double res = 0;
+char input_str20[256] = "4+5*xcos(1)";
+int error = main_calc(input_str20, 2.23, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid15
+double res = 0;
+char input_str21[256] = "(-5)x+0.25";
+int error = main_calc(input_str21, 2.23, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid16
+double res = 0;
+char input_str22[256] = "-sin(0.25)";
+int error = main_calc(input_str22, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid17
+double res = 0;
+char input_str23[256] = "*sin(0.25)";
+int error = main_calc(input_str23, 0, &res);
+ck_assert_int_eq(error, ERROR);
+
+#test valid18
+int error = graphic_valid(10, 10, -10, 10);
+ck_assert_int_eq(error, ERROR);
+
+#test valid19
+int error = graphic_valid(-10000000, 10, -10, 10);
+ck_assert_int_eq(error, ERROR);
